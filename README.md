@@ -41,7 +41,7 @@ Mobile Camera → Laptop (CV + Decision) → NodeMCU → Motors & Sensors
 
 ## Project Structure
 
-
+```
 project-root/
 │
 ├── hardware/
@@ -55,7 +55,7 @@ project-root/
 │ └── main.py
 │
 └── README.md
-
+```
 
 ---
 
