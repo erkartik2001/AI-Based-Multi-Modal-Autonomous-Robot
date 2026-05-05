@@ -1,6 +1,6 @@
 import requests
 
-ESP_IP = "192.168.1.19"
+ESP_IP = "192.168.1.13"
 
 while True:
     cmd = input("Enter your command (F/B/L/R/S): ")
