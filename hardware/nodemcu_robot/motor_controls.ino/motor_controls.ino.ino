@@ -2,7 +2,7 @@
 
 
 const char* ssid = "Airtel_Sund_5757";
-const char* password = "air80064";
+const char* password = "";
 
 WiFiServer server(80);
 
@@ -17,7 +17,14 @@ WiFiServer server(80);
 #define IN3 D6
 #define IN4 D5
 
+// ultrasonic sensor pins
+#define TRIG D0
+#define ECHO D7
+
 int speedVal = 50;
+// String lastCommand = "S";
+bool obstacleMode = false;
+
 
 
 void setup() {
@@ -28,6 +35,9 @@ void setup() {
   pinMode(IN2, OUTPUT);
   pinMode(IN3, OUTPUT);
   pinMode(IN4, OUTPUT);
+
+  pinMode(TRIG, OUTPUT);
+  pinMode(ECHO, INPUT);
 
   pinMode(ENAB, OUTPUT);
   WiFi.begin(ssid, password);
@@ -45,6 +55,30 @@ void setup() {
 
 void loop() {
 
+    float distance = getDistance();
+    // Serial.println(distance);
+
+    // Obstacle override
+    if (distance > 0 && distance <13) {
+      obstacleMode = true;
+
+      stop();
+      delay(100);
+
+      // avoid obstacle
+      left();
+      delay(300);
+
+      stop();
+      delay(100);
+
+      return; 
+    }
+
+    else{
+      obstacleMode = false;
+    }
+
     WiFiClient client = server.available();
 
     if(!client) return;
@@ -57,8 +91,8 @@ void loop() {
     else if (request.indexOf("/L") != -1) left();
     else if (request.indexOf("/R") != -1) right();
     else if (request.indexOf("/S") != -1) stop();
-    else if (request.indexOf("/+") != -1) speedVal += 100;
-    else if (request.indexOf("/-") != -1) speedVal -= 100;
+    else if (request.indexOf("/+") != -1) speedVal += 25;
+    else if (request.indexOf("/-") != -1) speedVal -= 25;
 
     speedVal = constrain(speedVal, 0, 1023);
     analogWrite(ENAB, speedVal);
@@ -109,6 +143,19 @@ void stop(){
 
 }
 
+float getDistance() {
+  digitalWrite(TRIG, LOW);
+  delayMicroseconds(2);
+
+  digitalWrite(TRIG, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(TRIG, LOW);
+
+  long duration = pulseIn(ECHO, HIGH);
+  float distance = duration / 58.0;
+
+  return distance;
+}
 
 
 
