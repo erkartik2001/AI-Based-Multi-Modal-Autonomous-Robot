@@ -47,8 +47,9 @@ void setup() {
     Serial.print(".");
   }
 
+  Serial.println();
   Serial.println("connected!");
-  Serial.println((WiFi.localIP())); // local ip assigned by the router
+  Serial.print((WiFi.localIP())); // local ip assigned by the router
   server.begin();
 
 }
